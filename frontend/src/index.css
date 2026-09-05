@@ -1,0 +1,109 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Light: corporate enterprise. Slate frames, deep navy ink, royal blue action. */
+  :root {
+    --c-canvas: 246 248 251;
+    --c-surface: 255 255 255;
+    --c-raised: 241 244 249;
+    --c-frame: 203 213 225;
+    --c-ink: 15 29 61;
+    --c-muted: 91 105 133;
+    --c-accent: 36 71 217;
+    --c-accent-ink: 29 58 184;
+    --c-signal: 36 71 217;
+    --grid-line: rgba(15, 29, 61, 0.06);
+  }
+
+  /* Dark: terminal grid. Charcoal, teal plant, neon green link status. */
+  .dark {
+    --c-canvas: 30 30 30;
+    --c-surface: 36 36 36;
+    --c-raised: 43 43 43;
+    --c-frame: 58 58 58;
+    --c-ink: 244 244 245;
+    --c-muted: 163 163 163;
+    --c-accent: 0 128 128;
+    --c-accent-ink: 45 199 190;
+    --c-signal: 57 255 20;
+    --grid-line: rgba(255, 255, 255, 0.045);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-canvas font-sans text-ink antialiased;
+    /* Only paint properties transition. Layout and text stay pinned so the
+       switch reads as a re-light of the same page, not a re-render. */
+    transition:
+      background-color var(--tw-duration, 180ms) ease,
+      color 180ms ease;
+  }
+
+  /* The patch-panel field: a faint alignment grid behind everything. */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+
+  *:focus-visible {
+    @apply outline-none ring-2 ring-accent-ink ring-offset-2 ring-offset-canvas;
+  }
+
+  ::selection {
+    @apply bg-accent text-white;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* One shared panel treatment: hairline frame, near-square corners, no shadow.
+     Depth comes from the frame colour, the way rack hardware reads. */
+  .panel {
+    @apply rounded-panel border border-frame bg-surface;
+  }
+
+  .rail-label {
+    @apply font-mono text-micro text-muted;
+  }
+
+  .shell {
+    @apply mx-auto w-full max-w-shell px-5 sm:px-8;
+  }
+
+  .link-underline {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 200ms ease;
+  }
+  .link-underline:hover,
+  .link-underline:focus-visible {
+    background-size: 100% 1px;
+  }
+}
